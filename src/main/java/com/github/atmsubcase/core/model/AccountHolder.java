@@ -4,6 +4,9 @@ import lombok.Builder;
 import lombok.Value;
 import org.apache.commons.lang3.Validate;
 
+/**
+ * Value object. Models an identifier for a person holding a {@linkplain Account}.
+ */
 @Value
 public class AccountHolder {
 
@@ -17,6 +20,7 @@ public class AccountHolder {
 
     @Builder
     private AccountHolder(String personId) {
+        // just an example, this obviously must be more
         this.personId = Validate.notBlank(personId);
     }
 }

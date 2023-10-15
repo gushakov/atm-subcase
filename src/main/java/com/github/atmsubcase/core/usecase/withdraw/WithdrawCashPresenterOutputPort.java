@@ -1,6 +1,6 @@
 package com.github.atmsubcase.core.usecase.withdraw;
 
-import com.github.atmsubcase.core.port.ErrorHandlingPresenterOutputPort;
+import com.github.atmsubcase.core.usecase.subcase.VerifyAccountPresenterOutputPort;
 
-public interface WithdrawCashPresenterOutputPort extends ErrorHandlingPresenterOutputPort {
+public interface WithdrawCashPresenterOutputPort extends VerifyAccountPresenterOutputPort {
 }

@@ -9,4 +9,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class PersistenceGateway implements PersistenceOperationsOutputPort {
 
+    @Override
+    public void rollback() {
+
+    }
 }

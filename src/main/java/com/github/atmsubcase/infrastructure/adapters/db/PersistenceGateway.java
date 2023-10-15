@@ -9,6 +9,4 @@ import org.springframework.stereotype.Service;
 @Service
 public class PersistenceGateway implements PersistenceOperationsOutputPort {
 
-    // JPA or Spring JDBC repositories
-
 }

@@ -8,12 +8,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-/**
- * This is a subcase: it specified a procedure for loading an {@code Account}
- * from the database and verifying that the currently authenticated user
- * has a permission to access the account. This subcase will be used by
- * two different parent use cases: "withdraw cash" and "wire transfer".
- */
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class VerifyAccountSubcase implements VerifyAccountSubcaseInputPort {

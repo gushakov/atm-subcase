@@ -3,7 +3,6 @@ package com.github.atmsubcase.core.usecase.transfer;
 import com.github.atmsubcase.core.model.Account;
 import com.github.atmsubcase.core.model.AccountNumber;
 import com.github.atmsubcase.core.port.db.PersistenceOperationsOutputPort;
-import com.github.atmsubcase.core.port.wire.WireTransferOperationsOutputPort;
 import com.github.atmsubcase.core.usecase.subcase.VerifyAccountSubcaseInputPort;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,6 @@ public class TransferFundsUseCase implements TransferFundsInputPort {
     // here is the input port for our subcase
     VerifyAccountSubcaseInputPort verifyAccountSubcase;
     PersistenceOperationsOutputPort persistenceOps;
-    WireTransferOperationsOutputPort wireTransferOps;
 
 
     @Transactional
@@ -62,6 +60,8 @@ public class TransferFundsUseCase implements TransferFundsInputPort {
             }
         }
 
+        // call presenter of "transfer funds" use case to present
+        // successful outcome of the use case to the user
         presenter.presentResultOfSuccessfulTransferOfFunds(sourceAccountAfterTransfer, targetAccountAfterTransfer);
     }
 }

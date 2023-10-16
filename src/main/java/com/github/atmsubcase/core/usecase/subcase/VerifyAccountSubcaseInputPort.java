@@ -13,14 +13,14 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public interface VerifyAccountSubcaseInputPort {
 
+    /**
+     * Calls {@linkplain VerifyAccountSubcase} subcase with ad-hoc implementation
+     * of {@linkplain VerifyAccountResultCallback} which will record the callback
+     * argument (verified account) and return it.
+     *
+     * @see #loadAccountAndVerify(AccountNumber, VerifyAccountResultCallback)
+     */
     default Account verifyAccount(AccountNumber accountNumber) {
-
-        /*
-            Calling subcase with ad-hoc implementation of "VerifyAccountResultCallback".
-            This should actually be done more elegantly with a lambda, but we
-            are leaving it here for illustration.
-         */
-
         final AtomicReference<Account> sourceAccountRef = new AtomicReference<>();
         loadAccountAndVerify(accountNumber, new VerifyAccountResultCallback() {
             @Override
@@ -32,10 +32,8 @@ public interface VerifyAccountSubcaseInputPort {
     }
 
     /**
-     * What differentiates a method of a subcase, it is that it takes a result callback.
-     * This call back will be called by the implementation of the subcase to signal
-     * the end of successful processing of the subcase, passing any results to back
-     * the parent use case.
+     * This method of is the actual procedure containing business logic of the subcase.
+     * @see VerifyAccountSubcase
      */
     void loadAccountAndVerify(AccountNumber accountNumber, VerifyAccountResultCallback resultCallback);
 

@@ -1,7 +1,6 @@
 package com.github.atmsubcase.infrastructure.adapters.security;
 
 import com.github.atmsubcase.core.port.security.SecurityOperationsOutputPort;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,7 +14,6 @@ public class SpringSecurityAdapter implements SecurityOperationsOutputPort {
 
         // This is just for illustration, the actual implementation will vary
         // depending on the authentication schema used.
-        return (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+        return "user1";
     }
 }

@@ -33,6 +33,7 @@ public interface VerifyAccountSubcaseInputPort {
 
     /**
      * This method of is the actual procedure containing business logic of the subcase.
+     *
      * @see VerifyAccountSubcase
      */
     void loadAccountAndVerify(AccountNumber accountNumber, VerifyAccountResultCallback resultCallback);

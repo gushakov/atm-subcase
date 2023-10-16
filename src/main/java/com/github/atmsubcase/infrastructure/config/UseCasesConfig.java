@@ -6,8 +6,12 @@ import com.github.atmsubcase.core.port.security.SecurityOperationsOutputPort;
 import com.github.atmsubcase.core.usecase.subcase.VerifyAccountPresenterOutputPort;
 import com.github.atmsubcase.core.usecase.subcase.VerifyAccountSubcase;
 import com.github.atmsubcase.core.usecase.subcase.VerifyAccountSubcaseInputPort;
+import com.github.atmsubcase.core.usecase.transfer.TransferFundsInputPort;
+import com.github.atmsubcase.core.usecase.transfer.TransferFundsPresenterOutputPort;
+import com.github.atmsubcase.core.usecase.transfer.TransferFundsUseCase;
 import com.github.atmsubcase.core.usecase.withdraw.WithdrawCashInputPort;
 import com.github.atmsubcase.core.usecase.withdraw.WithdrawCashUseCase;
+import com.github.atmsubcase.infrastructure.adapters.web.transfer.TransferFundsPresenter;
 import com.github.atmsubcase.infrastructure.adapters.web.withdraw.WithdrawCashPresenter;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +38,7 @@ public class UseCasesConfig {
         It must take an implementation of "VerifyAccountPresenterOutputPort"
         interface as a parameter. This parameter will be an actual presenter
         created for each use case. The rest of the arguments to the constructor
-        of the subcase are the injected secondary adapters. Just like for
-        a parent use case.
+        of the subcase are the injected secondary adapters.
      */
 
     @Bean
@@ -45,8 +48,8 @@ public class UseCasesConfig {
     }
 
     /*
-        Here is the bean for a parent use case. It passes a concrete instance of
-        a presenter as a parameter to the bean creation method for the subcase (above).
+        Here is the bean for a parent use case. It uses a concrete instance of
+        a subclass of "VerifyAccountPresenterOutputPort" to instantiate the subcase.
      */
 
     @Bean
@@ -54,6 +57,16 @@ public class UseCasesConfig {
     public WithdrawCashInputPort withdrawCashUseCase() {
         WithdrawCashPresenter presenter = new WithdrawCashPresenter();
         return new WithdrawCashUseCase(presenter, verifyAccountSubcase(presenter), persistenceOps, cashDistributorOps);
+    }
+
+    /*
+        Here is the bean for a different (parent) use case.
+     */
+    @Bean
+    @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+    public TransferFundsInputPort transferFundsUseCase() {
+        TransferFundsPresenterOutputPort presenter = new TransferFundsPresenter();
+        return new TransferFundsUseCase(presenter, verifyAccountSubcase(presenter), persistenceOps);
     }
 
 }

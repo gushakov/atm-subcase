@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class WithdrawCashUseCase implements WithdrawCashInputPort {
 
     WithdrawCashPresenterOutputPort presenter;
+    // here is the input port for our subcase
     VerifyAccountSubcaseInputPort verifyAccountSubcase;
     PersistenceOperationsOutputPort persistenceOps;
     CashDistributorOperationsOutputPort cashDistributorOps;
@@ -34,7 +35,12 @@ public class WithdrawCashUseCase implements WithdrawCashInputPort {
             // create a valid value object representing an account number
             AccountNumber accountNumber = AccountNumber.of(accountNumberArg);
 
-            // call the subcase to load the account and verify user's permissions
+            /*
+                Call the subcase to load the account and verify user's permissions.
+                If everything goes well, the subcase will return a verified
+                account which will be used for further business processing
+                in this (parent) use case.
+             */
             Account sourceAccount = verifyAccount(accountNumber);
 
             // delegate to the "Account" aggregate to actually perform
@@ -60,7 +66,7 @@ public class WithdrawCashUseCase implements WithdrawCashInputPort {
         }
 
         /*
-            Here we are calling the presenter for the use case so that
+            Here we are calling the presenter for the parent use case so that
             it can present the overall result of "withdraw cash" use case,
             possibly by showing the resulting amount or other account information.
          */
@@ -69,6 +75,13 @@ public class WithdrawCashUseCase implements WithdrawCashInputPort {
     }
 
     private Account verifyAccount(AccountNumber accountNumber) {
+
+        /*
+            Calling subcase with ad-hoc implementation of "VerifyAccountResultCallback".
+            This should actually be done more elegantly with a lambda, but we
+            are leaving it here for illustration.
+         */
+
         final AtomicReference<Account> sourceAccountRef = new AtomicReference<>();
         verifyAccountSubcase.loadAccountAndVerify(accountNumber, new VerifyAccountResultCallback() {
             @Override

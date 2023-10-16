@@ -10,7 +10,8 @@ import org.apache.commons.lang3.Validate;
 import java.math.BigDecimal;
 
 /**
- * Aggregate root. Models a back account.
+ * Aggregate root. Models a bank account. Immutable as according
+ * to Clean DDD practice.
  */
 @Getter
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -19,9 +20,7 @@ public class Account {
 
     AccountNumber accountNumber;
     AccountHolder accountHolder;
-
     BigDecimal currentAmount;
-
     boolean blocked;
 
     @Builder
@@ -42,8 +41,12 @@ public class Account {
         return accountHolder.samePerson(personId) && !blocked;
     }
 
+    /**
+     * Returns a new {@code Account} with current amount decreased
+     * to reflect the withdrawal.
+     */
     public Account withdraw(BigDecimal amount) {
-            return newAccount().currentAmount(currentAmount.subtract(amount)).build();
+        return newAccount().currentAmount(currentAmount.subtract(amount)).build();
     }
 
     private AccountBuilder newAccount() {

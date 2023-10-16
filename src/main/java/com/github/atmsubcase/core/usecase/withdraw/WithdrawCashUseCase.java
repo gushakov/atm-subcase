@@ -4,7 +4,6 @@ import com.github.atmsubcase.core.model.Account;
 import com.github.atmsubcase.core.model.AccountNumber;
 import com.github.atmsubcase.core.port.db.PersistenceOperationsOutputPort;
 import com.github.atmsubcase.core.port.distributor.CashDistributorOperationsOutputPort;
-import com.github.atmsubcase.core.usecase.subcase.VerifyAccountResultCallback;
 import com.github.atmsubcase.core.usecase.subcase.VerifyAccountSubcaseInputPort;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +11,6 @@ import lombok.experimental.FieldDefaults;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.util.concurrent.atomic.AtomicReference;
 
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -36,12 +34,13 @@ public class WithdrawCashUseCase implements WithdrawCashInputPort {
             AccountNumber accountNumber = AccountNumber.of(accountNumberArg);
 
             /*
+                This is an example of reusing a subcase in a (parent) use case.
                 Call the subcase to load the account and verify user's permissions.
                 If everything goes well, the subcase will return a verified
                 account which will be used for further business processing
                 in this (parent) use case.
              */
-            Account sourceAccount = verifyAccount(accountNumber);
+            Account sourceAccount = verifyAccountSubcase.verifyAccount(accountNumber);
 
             // delegate to the "Account" aggregate to actually perform
             // the logic of the withdrawal
@@ -53,14 +52,12 @@ public class WithdrawCashUseCase implements WithdrawCashInputPort {
             // distribute cash
             cashDistributorOps.distribute(amount);
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             presenter.presentError(e);
             rollback = true;
             return;
-        }
-        finally {
-            if (rollback){
+        } finally {
+            if (rollback) {
                 persistenceOps.rollback();
             }
         }
@@ -72,23 +69,5 @@ public class WithdrawCashUseCase implements WithdrawCashInputPort {
          */
         presenter.presentResultOfSuccessfulCashWithdrawal(accountAfterWithdrawal);
 
-    }
-
-    private Account verifyAccount(AccountNumber accountNumber) {
-
-        /*
-            Calling subcase with ad-hoc implementation of "VerifyAccountResultCallback".
-            This should actually be done more elegantly with a lambda, but we
-            are leaving it here for illustration.
-         */
-
-        final AtomicReference<Account> sourceAccountRef = new AtomicReference<>();
-        verifyAccountSubcase.loadAccountAndVerify(accountNumber, new VerifyAccountResultCallback() {
-            @Override
-            public void doWithVerifiedAccount(Account verifiedAccount) {
-                sourceAccountRef.set(verifiedAccount);
-            }
-        });
-        return sourceAccountRef.get();
     }
 }

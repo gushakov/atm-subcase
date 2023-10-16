@@ -40,18 +40,18 @@ public class UseCasesConfig {
 
     @Bean
     @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-    public VerifyAccountSubcaseInputPort verifyAccountSubcase(@Autowired(required = false) VerifyAccountPresenterOutputPort presenter){
+    public VerifyAccountSubcaseInputPort verifyAccountSubcase(@Autowired(required = false) VerifyAccountPresenterOutputPort presenter) {
         return new VerifyAccountSubcase(presenter, persistenceOps, securityOps);
     }
 
     /*
-        Here is the bean for a parent use case. It passes its presenter as a parameter
-        to the bean creation method for subcase (above).
+        Here is the bean for a parent use case. It passes a concrete instance of
+        a presenter as a parameter to the bean creation method for the subcase (above).
      */
 
     @Bean
     @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-    public WithdrawCashInputPort withdrawCashUseCase(){
+    public WithdrawCashInputPort withdrawCashUseCase() {
         WithdrawCashPresenter presenter = new WithdrawCashPresenter();
         return new WithdrawCashUseCase(presenter, verifyAccountSubcase(presenter), persistenceOps, cashDistributorOps);
     }

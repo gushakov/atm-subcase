@@ -20,14 +20,14 @@ public class Account {
 
     AccountNumber accountNumber;
     AccountHolder accountHolder;
-    BigDecimal currentAmount;
+    BigDecimal currentBalance;
     boolean blocked;
 
     @Builder
-    public Account(AccountNumber accountNumber, AccountHolder accountHolder, BigDecimal currentAmount, boolean blocked) {
+    public Account(AccountNumber accountNumber, AccountHolder accountHolder, BigDecimal currentBalance, boolean blocked) {
         this.accountNumber = Validate.notNull(accountNumber);
         this.accountHolder = Validate.notNull(accountHolder);
-        this.currentAmount = Validate.notNull(currentAmount);
+        this.currentBalance = Validate.notNull(currentBalance);
         this.blocked = blocked;
     }
 
@@ -42,11 +42,17 @@ public class Account {
     }
 
     /**
-     * Returns a new {@code Account} with current amount decreased
-     * to reflect the withdrawal.
+     * Returns a new {@code Account} with current balance decreased by the {@code amount}.
      */
     public Account withdraw(BigDecimal amount) {
-        return newAccount().currentAmount(currentAmount.subtract(amount)).build();
+        return newAccount().currentBalance(currentBalance.subtract(amount)).build();
+    }
+
+    /**
+     * Returns a new {@code Account} with current balance increased by the {@code amount}.
+     */
+    public Account credit(BigDecimal amount) {
+        return newAccount().currentBalance(currentBalance.add(amount)).build();
     }
 
     private AccountBuilder newAccount() {
@@ -54,7 +60,7 @@ public class Account {
                 .accountNumber(accountNumber)
                 .accountHolder(accountHolder)
                 .blocked(blocked)
-                .currentAmount(currentAmount)
+                .currentBalance(currentBalance)
                 ;
     }
 }

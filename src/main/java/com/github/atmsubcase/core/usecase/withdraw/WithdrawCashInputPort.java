@@ -4,6 +4,6 @@ import java.math.BigDecimal;
 
 public interface WithdrawCashInputPort {
 
-    void withdrawCash(String accountNumber, BigDecimal amount);
+    void withdrawCash(String accountNumberArg, BigDecimal amount);
 
 }

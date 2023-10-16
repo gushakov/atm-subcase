@@ -5,7 +5,7 @@ import lombok.Value;
 import org.apache.commons.lang3.Validate;
 
 /**
- * Value object. Models an identifier for a person holding a {@linkplain Account}.
+ * Value object. Models an identifier for a person holding an {@linkplain Account}.
  */
 @Value
 public class AccountHolder {
@@ -20,7 +20,14 @@ public class AccountHolder {
 
     @Builder
     private AccountHolder(String personId) {
-        // just an example, this obviously must be more
         this.personId = Validate.notBlank(personId);
+    }
+
+    /**
+     * Returns {@code true} if the given {@code aPersonId} identifies the same
+     * person as the person referenced by this account holder.
+     */
+    public boolean samePerson(String aPersonId) {
+        return this.personId.equals(aPersonId);
     }
 }

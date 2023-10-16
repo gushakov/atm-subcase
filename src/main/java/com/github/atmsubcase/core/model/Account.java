@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
 import org.apache.commons.lang3.Validate;
 
 import java.math.BigDecimal;
@@ -21,15 +20,38 @@ public class Account {
     AccountNumber accountNumber;
     AccountHolder accountHolder;
 
-    @NonFinal
     BigDecimal currentAmount;
 
+    boolean blocked;
+
     @Builder
-    public Account(AccountNumber accountNumber, AccountHolder accountHolder) {
+    public Account(AccountNumber accountNumber, AccountHolder accountHolder, BigDecimal currentAmount, boolean blocked) {
         this.accountNumber = Validate.notNull(accountNumber);
         this.accountHolder = Validate.notNull(accountHolder);
+        this.currentAmount = Validate.notNull(currentAmount);
+        this.blocked = blocked;
+    }
 
-        // we are starting every one at a $1000, why not
-        this.currentAmount = new BigDecimal(1000);
+    /**
+     * Returns {@code true} if a person with the given {@code personId}
+     * can access this account.
+     */
+    public boolean canAccess(String personId) {
+        // for this example we simply check if account holder is the same
+        // person and that the account is not blocked
+        return accountHolder.samePerson(personId) && !blocked;
+    }
+
+    public Account withdraw(BigDecimal amount) {
+            return newAccount().currentAmount(currentAmount.subtract(amount)).build();
+    }
+
+    private AccountBuilder newAccount() {
+        return Account.builder()
+                .accountNumber(accountNumber)
+                .accountHolder(accountHolder)
+                .blocked(blocked)
+                .currentAmount(currentAmount)
+                ;
     }
 }

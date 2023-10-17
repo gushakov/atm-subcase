@@ -4,3 +4,6 @@ target/
 *.iws
 *.iml
 *.ipr
+
+## draw.io temporary and backup files
+.$*

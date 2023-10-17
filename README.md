@@ -1,3 +1,5 @@
 # Subcases in CA
 
-Code illustrating the sharing functionality between use cases in Clean Architecture.
+Illustrating how two different use cases can share a common subcase.
+
+Here is a link to a Medium article referencing this code.

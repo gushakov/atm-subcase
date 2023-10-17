@@ -1,2 +1,3 @@
-*       text eol=lf
-*.drawio   text
+*           text eol=lf
+*.drawio    text
+*.png       binary

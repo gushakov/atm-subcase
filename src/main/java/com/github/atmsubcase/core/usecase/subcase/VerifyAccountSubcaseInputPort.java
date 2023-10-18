@@ -3,6 +3,7 @@ package com.github.atmsubcase.core.usecase.subcase;
 import com.github.atmsubcase.core.model.Account;
 import com.github.atmsubcase.core.model.AccountNumber;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -28,7 +29,17 @@ public interface VerifyAccountSubcaseInputPort {
                 sourceAccountRef.set(verifiedAccount);
             }
         });
-        return sourceAccountRef.get();
+
+        /*
+            Update 18.10.2023 (bug fix):
+            --------------------------
+            We need to make sure that if we did not set any result during
+            the execution of the subcase, then we do not execute the rest
+            of the (parent) use case. So we throw an exception to signal
+            the fact the subcase did not execute successfully.
+         */
+
+        return Optional.ofNullable(sourceAccountRef.get()).orElseThrow(() -> new VerifyAccountFailedError(accountNumber));
     }
 
     /**

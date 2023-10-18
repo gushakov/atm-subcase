@@ -6,6 +6,7 @@ import com.github.atmsubcase.core.model.AccountNumber;
 import com.github.atmsubcase.core.port.db.PersistenceOperationsOutputPort;
 import com.github.atmsubcase.core.port.distributor.CashDistributorOperationsOutputPort;
 import com.github.atmsubcase.core.port.security.SecurityOperationsOutputPort;
+import com.github.atmsubcase.core.usecase.subcase.VerifyAccountFailedError;
 import com.github.atmsubcase.core.usecase.subcase.VerifyAccountSubcase;
 import com.github.atmsubcase.core.usecase.withdraw.WithdrawCashInputPort;
 import com.github.atmsubcase.core.usecase.withdraw.WithdrawCashPresenterOutputPort;
@@ -78,6 +79,18 @@ public class WithdrawCashUseCaseTest {
 
         // and
 
+        /*
+            Update 18.10.2023 (bug fix):
+            --------------------------
+            We also need to check that the normal flow of the parent use case
+            was effectively interrupted by an exception thrown from the
+            subcase.
+         */
+
+        anErrorWasThrownSignalingVerificationFailureForAccount("account1");
+
+        // and
+
         noCashWasDistributed();
         noResultOfSuccessfulCashWithdrawalWasPresented();
     }
@@ -145,6 +158,13 @@ public class WithdrawCashUseCaseTest {
         Account account = accountArg.getValue();
         assertThat(personId).isEqualTo(userPersonId);
         assertThat(account.getAccountNumber()).isEqualTo(AccountNumber.of(accountNumber));
+    }
+
+    private void anErrorWasThrownSignalingVerificationFailureForAccount(String accountNumber) {
+        ArgumentCaptor<VerifyAccountFailedError> errorArg = ArgumentCaptor.forClass(VerifyAccountFailedError.class);
+        verify(withdrawCashPresenter, times(1))
+                .presentError(errorArg.capture());
+        assertThat(errorArg.getValue().getAccountNumber()).isEqualTo(AccountNumber.of(accountNumber));
     }
 
     private void noCashWasDistributed() {
